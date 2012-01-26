@@ -28,7 +28,7 @@
         // add socket io add pushpin events
         socket.on('addPushpin', function (pushpinData) {
           var pushpinEntry = findPushpinData(pushpinData.latitude, pushpinData.longitude);
-          if (!pushpinEntry) 
+          if (!pushpinEntry) {
             pushpins.push(pushpinData);
             addPushpin(pushpinData);
           }
@@ -60,6 +60,8 @@
       }
 
       function addPushpin(location, isNew) {
+        $("#removeButton").attr('disabled', 'disabled');
+
         if (newPushpin) {
           map.entities.remove(newPushpin);
           newPushpin = null;
@@ -103,13 +105,19 @@
 
             var infoboxOptions = { 
               title: currentPushpin.name,
-              width: 250,
+              width: 200,
               height: 200,
-              description: '<img src="' + currentPushpin.imageUrl + '" width="70px" />',
               offset: new Microsoft.Maps.Point(0, 40) };
-            
+
+            if (currentPushpin.imageUrl) {
+              infoboxOptions.description = '<img src="' + currentPushpin.imageUrl + '" width="70px" />';
+            } else {
+              infoboxOptions.description = 'No image.';
+            }
+
             currentPushpinInfobox = new Microsoft.Maps.Infobox(pushpin.getLocation(), infoboxOptions);
             map.entities.push(currentPushpinInfobox);
+            $("#removeButton").removeAttr('disabled');
           }
         }
       }
@@ -124,6 +132,7 @@
           }
 
           currentPushpin = null;
+          $("#removeButton").attr('disabled', 'disabled');
         }
       }
 
@@ -150,9 +159,10 @@
       }
 
       function removeByElement(arrayName,arrayElement) {
-        for(var i=0; i<arrayName.length;i++ ) {
-          if(arrayName[i]==arrayElement)
-            arrayName.splice(i,1); 
+        for(var i = 0; i < arrayName.length; i++ ) {
+          if(arrayName[i] === arrayElement) {
+            arrayName.splice(i,1);
+          }
         }
       }
 
@@ -174,9 +184,9 @@
   </head>
   <body onload="getMap();">
     <div id="main">
-      <div id='myMap' style="display:block; position:absolute; top:0; left:0; width:80%; height:100%;"></div>
+      <div id="myMap" style="display:block; position:absolute; top:0; left:0; width:80%; height:100%;"></div>
       <div style="display:block; position:absolute; top:0; left:81%; width:14%; height:100%;">
-        <form id="pushpinData" action="create" enctype="multipart/form-data" method="post">
+        <form id="pushpinData" action="create" enctype="multipart/form-data" method="post" disabled="disabled">
           <p><br />Name:<input id="pushpinName" name="name" type="text" size="25" maxlength="30" value="Enter Name"/></p>
           <p><br />Image:<input id="pushpinFile" type="file" name="pushpinFile" /></p>
           <input type="hidden" id="latitude" name="latitude" value="" />
@@ -185,7 +195,7 @@
           <input type="button" onclick="cancelPushpin()" value="Cancel" />
         </form>
         <div id="clearDiv" style="display:block; position:absolute; bottom:10px; right:0px">
-          <input id="removeButton" type="button" value="Remove" onclick="removePushpin()" />
+          <input id="removeButton" disabled="disabled" type="button" value="Remove" onclick="removePushpin()" />
           <input id="clearButton" type="button" value="Clear" onclick="clearMap()" />
         </div>
       </div>

@@ -51,9 +51,6 @@ PushpinService.createPushpinService(function (pushpinService) {
     });
 
     socket.on('removePushpin', function (pushpin) {
-      console.log('OLHAAAAAAAAAAAAAAAA PARA AQUIIIIIIIIII');
-      console.log(pushpin);
-
       pushpinService.removePushpin(pushpin, function () {
         socket.emit('removePushpin', pushpin);
       });

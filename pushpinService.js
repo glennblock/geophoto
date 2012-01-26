@@ -58,10 +58,6 @@ PushpinService.prototype = {
       .from(TABLE_NAME);
 
     self.tableClient.queryEntities(tableQuery, function (err, pushpins) {
-      for (var i = 0; i < pushpins.length; i++) {
-        pushpins[i].imageUrl = self.blobClient.getBlobUrl(CONTAINER_NAME, pushpins[i].RowKey).url();
-      }
-
       callback(err, pushpins);
     });
   },
@@ -103,6 +99,7 @@ PushpinService.prototype = {
       var pushpin = req.body;
       pushpin.RowKey = uuid();
       pushpin.PartitionKey = 'locations';
+      pushpin.imageUrl = self.blobClient.getBlobUrl(CONTAINER_NAME, pushpin.RowKey).url();
 
       self.tableClient.insertEntity(TABLE_NAME, pushpin, function (error) {
         if (error) {
