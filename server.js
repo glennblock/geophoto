@@ -4,7 +4,6 @@
 
 var express = require('express')
   , PushpinService = require('./pushpinService')
-  , azure = require('azure')
   , socketio = require('socket.io');
 
 var app = module.exports = express.createServer();
@@ -37,6 +36,11 @@ PushpinService.createPushpinService(function (pushpinService) {
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 
   var io = socketio.listen(app);
+  
+  io.set('transports', [
+    'websocket'
+  , 'xhr-polling'
+  ]);
 
   io.sockets.on('connection', function (socket) {
     // get list of pushpins from the table and emit events for each of them
