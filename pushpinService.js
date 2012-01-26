@@ -66,6 +66,23 @@ PushpinService.prototype = {
     });
   },
 
+  removePushpin: function (pushpin, callback) {
+    var self = this;
+
+    var tableQuery = azure.TableQuery
+      .select()
+      .from(TABLE_NAME)
+      .where('name eq ?', pushpin.name);
+
+    self.tableClient.queryEntities(tableQuery, function (err, pushpins) {
+      if (pushpins && pushpins.length > 0) {
+        self.tableClient.deleteEntity(TABLE_NAME, pushpins[0], callback);
+      } else {
+        callback(null);
+      }
+    });
+  },
+
   clearPushpins: function (callback) {
     var self = this;
     var tableQuery = azure.TableQuery

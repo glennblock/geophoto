@@ -36,7 +36,7 @@ PushpinService.createPushpinService(function (pushpinService) {
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 
   var io = socketio.listen(app);
-  
+
   io.set('transports', [
     'websocket'
   , 'xhr-polling'
@@ -48,6 +48,15 @@ PushpinService.createPushpinService(function (pushpinService) {
       for (var entity in entities) {
         socket.emit('addPushpin', entities[entity]);
       }
+    });
+
+    socket.on('removePushpin', function (pushpin) {
+      console.log('OLHAAAAAAAAAAAAAAAA PARA AQUIIIIIIIIII');
+      console.log(pushpin);
+
+      pushpinService.removePushpin(pushpin, function () {
+        socket.emit('removePushpin', pushpin);
+      });
     });
 
     socket.on('clear', function () {
