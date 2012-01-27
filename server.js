@@ -38,7 +38,6 @@ PushpinService.createPushpinService(function (pushpinService) {
   var io = socketio.listen(app);
   
   io.set('transports', [
-    'websocket'
   , 'xhr-polling'
   ]);
 
